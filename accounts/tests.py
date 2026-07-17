@@ -5,8 +5,6 @@ from django.urls import reverse, resolve
 from .forms import CustomUserCreationForm
 from .views import SignupPageView
 
-#Create all tests here
-
 class CustomUserTests(TestCase):
     def test_create_user(self):
         User = get_user_model()
@@ -33,6 +31,7 @@ class CustomUserTests(TestCase):
 class SignUpPageTests(TestCase):
     def setUp(self):
         self.url = reverse("signup")
+        self.response = self.client.get(self.url)
     
     def test_signup_template(self):
         self.assertEqual(self.response.status_code, 200)
@@ -54,16 +53,17 @@ class SignUpPageTests(TestCase):
         self.assertFalse(
             get_user_model().objects.filter(username="newuser").exists()
         )
-        # 2. Submit valid registration data
+        # 2. Submit valid registration data using password1 and password2
         response = self.client.post(
             self.url,
             data={
                 "username": "newuser",
                 "email": "newuser@example.com",
-                "password": "securepassword123",
+                "password1": "securepassword123",
+                "password2": "securepassword123",
             },
         )
-        # 3. Assert it redirects to the login page (or your custom success URL)
+        # 3. Assert it redirects to the login page
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("login"))
 
