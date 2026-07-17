@@ -48,3 +48,26 @@ class SignUpPageTests(TestCase):
     def test_signup_view(self):
         view = resolve(self.url)
         self.assertEqual(view.func.view_class, SignupPageView)
+    
+    def test_signup_form_creates_user_and_redirects(self):
+        # 1. Verify the user doesn't exist yet
+        self.assertFalse(
+            get_user_model().objects.filter(username="newuser").exists()
+        )
+        # 2. Submit valid registration data
+        response = self.client.post(
+            self.url,
+            data={
+                "username": "newuser",
+                "email": "newuser@example.com",
+                "password": "securepassword123",
+            },
+        )
+        # 3. Assert it redirects to the login page (or your custom success URL)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("login"))
+
+        # 4. Assert the user was successfully written to the database
+        self.assertTrue(
+            get_user_model().objects.filter(username="newuser").exists()
+        )
