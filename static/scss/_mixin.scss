@@ -46,7 +46,6 @@
 }
 
 
-
 @mixin box-shadow($value) {
   -webkit-box-shadow: $value;
      -moz-box-shadow: $value;
@@ -54,20 +53,9 @@
 }
 
 
-// Placeholder Mixins
 @mixin placeholder {
     &::placeholder { @content; }
     &::-moz-placeholder { @content; }
-    &::-moz-placeholder { @content; }
+    &:-ms-input-placeholder { @content; }
     &::-webkit-input-placeholder { @content; }
 }
-
-
-
-
-
-
-
-
-
-
