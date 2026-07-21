@@ -8,13 +8,24 @@
           <a class="navbar-brand" href="{% url 'home' %}">
             <img src="{% static 'images/logo/logo.svg' %}" alt="CivicEye Logo" />
           </a>
-          <button class="navbar-toggler">
+          
+          <!-- Accessible Navbar Toggler -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
             <span class="toggler-icon"> </span>
             <span class="toggler-icon"> </span>
             <span class="toggler-icon"> </span>
           </button>
 
-          <div class="navbar-collapse">
+          <!-- Collapsible Navigation Container -->
+          <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul id="nav" class="navbar-nav mx-auto">
               <li class="nav-item">
                 <a class="ud-menu-scroll" href="#home">Home</a>

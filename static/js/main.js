@@ -1,64 +1,83 @@
 (function () {
   "use strict";
 
-  // ======= Sticky
   window.onscroll = function () {
     const ud_header = document.querySelector(".ud-header");
-    const sticky = ud_header.offsetTop;
     const logo = document.querySelector(".navbar-brand img");
-
-    if (window.pageYOffset > sticky) {
-      ud_header.classList.add("sticky");
-    } else {
-      ud_header.classList.remove("sticky");
-    }
-
-    // === logo change
-    if (ud_header.classList.contains("sticky")) {
-      logo.src = "assets/images/logo/logo-2.svg";
-    } else {
-      logo.src = "assets/images/logo/logo.svg";
-    }
-
-    // show or hide the back-top-top button
     const backToTop = document.querySelector(".back-to-top");
-    if (
-      document.body.scrollTop > 50 ||
-      document.documentElement.scrollTop > 50
-    ) {
-      backToTop.style.display = "flex";
-    } else {
-      backToTop.style.display = "none";
+
+    if (ud_header) {
+      const sticky = ud_header.offsetTop;
+
+      if (window.pageYOffset > sticky) {
+        ud_header.classList.add("sticky");
+      } else {
+        ud_header.classList.remove("sticky");
+      }
+
+      // Guard: Swapping logo source safely if logo element exists
+      if (logo) {
+        if (ud_header.classList.contains("sticky")) {
+          logo.src = logo.src.replace("logo.svg", "logo-2.svg");
+        } else {
+          logo.src = logo.src.replace("logo-2.svg", "logo.svg");
+        }
+      }
+    }
+
+    // Guard: Only toggle back-to-top button if element exists
+    if (backToTop) {
+      if (
+        document.body.scrollTop > 50 ||
+        document.documentElement.scrollTop > 50
+      ) {
+        backToTop.style.display = "flex";
+      } else {
+        backToTop.style.display = "none";
+      }
     }
   };
 
-  //===== close navbar-collapse when a  clicked
-  let navbarToggler = document.querySelector(".navbar-toggler");
+  // ===== Close navbar-collapse when a link is clicked & toggle menu
+  const navbarToggler = document.querySelector(".navbar-toggler");
   const navbarCollapse = document.querySelector(".navbar-collapse");
 
-  document.querySelectorAll(".ud-menu-scroll").forEach((e) =>
-    e.addEventListener("click", () => {
-      navbarToggler.classList.remove("active");
-      navbarCollapse.classList.remove("show");
-    })
-  );
-  navbarToggler.addEventListener("click", function () {
-    navbarToggler.classList.toggle("active");
-    navbarCollapse.classList.toggle("show");
-  });
+  // Guard: Ensure both elements exist before attaching event listeners
+  if (navbarToggler && navbarCollapse) {
+    document.querySelectorAll(".ud-menu-scroll").forEach((e) =>
+      e.addEventListener("click", () => {
+        navbarToggler.classList.remove("active");
+        navbarCollapse.classList.remove("show");
+      })
+    );
 
-  // ===== submenu
+    navbarToggler.addEventListener("click", function () {
+      navbarToggler.classList.toggle("active");
+      navbarCollapse.classList.toggle("show");
+    });
+  }
+
+  // ===== Submenu Handler
   const submenuButton = document.querySelectorAll(".nav-item-has-children");
   submenuButton.forEach((elem) => {
-    elem.querySelector("a").addEventListener("click", () => {
-      elem.querySelector(".ud-submenu").classList.toggle("show");
-    });
+    const anchor = elem.querySelector("a");
+    const submenu = elem.querySelector(".ud-submenu");
+
+    // Guard: Ensure anchor and submenu exist within wrapper
+    if (anchor && submenu) {
+      anchor.addEventListener("click", (e) => {
+        e.preventDefault();
+        submenu.classList.toggle("show");
+      });
+    }
   });
 
-  // ===== wow js
-  new WOW().init();
+  // ===== WOW.js Animation Initializer
+  if (typeof WOW === "function") {
+    new WOW().init();
+  }
 
-  // ====== scroll top js
+  // ====== Scroll To Top Smooth Animation
   function scrollTo(element, to = 0, duration = 500) {
     const start = element.scrollTop;
     const change = to - start;
@@ -67,9 +86,7 @@
 
     const animateScroll = () => {
       currentTime += increment;
-
       const val = Math.easeInOutQuad(currentTime, start, change, duration);
-
       element.scrollTop = val;
 
       if (currentTime < duration) {
@@ -87,7 +104,11 @@
     return (-c / 2) * (t * (t - 2) - 1) + b;
   };
 
-  document.querySelector(".back-to-top").onclick = () => {
-    scrollTo(document.documentElement);
-  };
+  const backToTopBtn = document.querySelector(".back-to-top");
+  // Guard: Check button existence before assigning onclick handler
+  if (backToTopBtn) {
+    backToTopBtn.onclick = () => {
+      scrollTo(document.documentElement);
+    };
+  }
 })();
