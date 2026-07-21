@@ -20,7 +20,9 @@
 <body>
 
   <!-- Header / Navigation -->
-  {% include 'includes/header.html' %}
+  {% block header %}
+    {% include 'includes/header.html' %}
+  {% endblock header %}
 
   <!-- Page Content -->
   {% block content %}
