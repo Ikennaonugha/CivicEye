@@ -1,20 +1,55 @@
-.venv
-*.log
-node_modules/
-.env
-__pycache__/
-venv/
-*.pyc
+# 1. Database & Local Storage Files
 *.sqlite3
-db.sqlite3
-*.db
-media/
+*.sqlite3-journal
+*.sqlite3-shm
+*.sqlite3-wal
+db.sqlite3*
+
+# 2. Virtual Environments & Dependencies
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# 3. Environment Variables & Credentials
+.env
+.env.*
+!.env.example
+secrets.json
+
+# 4. Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 5. Django Static & Media Files
 staticfiles/
-settings_local.py
+media/
+*.log
+
+# 6. IDEs, Editors & System Files
+.vscode/
 .idea/
-*.sublime-
 *.swp
 *.swo
-# OS generated files
 .DS_Store
 Thumbs.db
