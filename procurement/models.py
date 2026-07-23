@@ -1,8 +1,8 @@
 from django.db import models
 
 class ContractingRelease(models.Model):
-    # Unique Open Contracting ID
-    ocid = models.CharField(max_length=255, unique=True, db_index=True)
+    # Open Contracting ID (indexed, but unique per release_id)
+    ocid = models.CharField(max_length=255, db_index=True)
     release_id = models.CharField(max_length=50)
     date = models.DateTimeField(null=True, blank=True)
     initiation_type = models.CharField(max_length=100, null=True, blank=True)
@@ -28,5 +28,13 @@ class ContractingRelease(models.Model):
     tender_data = models.JSONField(default=dict, null=True, blank=True)
     awards_data = models.JSONField(default=list, null=True, blank=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['ocid', 'release_id'],
+                name='unique_ocid_release'
+            )
+        ]
+
     def __str__(self):
-        return f"{self.ocid} - {self.buyer_name}"
+        return f"{self.ocid} - {self.release_id} - {self.buyer_name}"
