@@ -9,4 +9,5 @@ urlpatterns = [
     # Local apps
     path("", include("pages.urls")),
     path('dashboard/', include('dashboard.urls')),
+    path('news/', include('news.urls')),
 ]
