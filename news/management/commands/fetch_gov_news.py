@@ -4,56 +4,70 @@ import time
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 import feedparser
+import requests
 from news.models import GovernmentNewsArticle
 
-FEEDS = [
-    (
-        'Premium Times - Politics & Gov',
-        'https://www.premiumtimesng.com/category/news/top-news/feed',
-    ),
-    ('Punch - Politics', 'https://punchng.com/topics/news/politics/feed/'),
-    ('Vanguard - National', 'https://www.vanguardngr.com/category/national-news/feed/'),
-    ('Channels TV - Politics', 'https://www.channelstv.com/category/politics/feed/'),
-    ('The Guardian - Governance', 'https://guardian.ng/category/news/nigeria/national/feed/'),
+FEED_CONFIG = [
+    # Governance & Politics
+    {
+        'category': 'gov',
+        'source': 'Premium Times',
+        'url': 'https://www.premiumtimesng.com/category/news/top-news/feed',
+    },
+    {
+        'category': 'gov',
+        'source': 'Punch',
+        'url': 'https://punchng.com/topics/news/feed/',
+    },
+    # Economy & Business
+    {
+        'category': 'economy',
+        'source': 'BusinessDay',
+        'url': 'https://businessday.ng/feed/',
+    },
+    {
+        'category': 'economy',
+        'source': 'Nairametrics',
+        'url': 'https://nairametrics.com/feed/',
+    },
+    # Tech & Innovation
+    {
+        'category': 'tech',
+        'source': 'TechCabal',
+        'url': 'https://techcabal.com/feed/',
+    },
+    {
+        'category': 'tech',
+        'source': 'Techpoint Africa',
+        'url': 'https://techpoint.africa/feed/',
+    },
+    # Society & Education
+    {
+        'category': 'society',
+        'source': 'Vanguard',
+        'url': 'https://www.vanguardngr.com/category/national-news/feed/',
+    },
 ]
 
-GOV_KEYWORDS = [
-    'government',
-    'federal',
-    'ministry',
-    'minister',
-    'procurement',
-    'budget',
-    'senate',
-    'house of reps',
-    'national assembly',
-    'presidency',
-    'cbn',
-    'efcc',
-    'icpc',
-    'policy',
-    'governor',
-    'gazette',
-    'allocation',
-    'statutory',
-    'tenders',
-    'contract',
-    'audit',
-]
+# Browser User-Agent to bypass CDN/Cloudflare SSL blocks
+HTTP_HEADERS = {
+    'User-Agent': (
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+        'AppleWebKit/537.36 (KHTML, like Gecko) '
+        'Chrome/124.0.0.0 Safari/537.36'
+    ),
+    'Accept': (
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    ),
+}
 
 
 def extract_image_url(entry):
-    """Extracts image URLs from media tags, enclosures, or HTML content,
-
-    handling WordPress lazy loading (data-src) and CDN host restrictions.
-    """
-    # 1. Media content / thumbnail tags
     if hasattr(entry, 'media_thumbnail') and entry.media_thumbnail:
         return entry.media_thumbnail[0].get('url')
     if hasattr(entry, 'media_content') and entry.media_content:
         return entry.media_content[0].get('url')
 
-    # 2. File enclosures
     if hasattr(entry, 'enclosures') and entry.enclosures:
         for enc in entry.enclosures:
             if enc.get('type', '').startswith('image/') or any(
@@ -62,7 +76,6 @@ def extract_image_url(entry):
             ):
                 return enc.get('href')
 
-    # 3. Gather all HTML sources
     html_sources = []
     if hasattr(entry, 'content') and entry.content:
         for c in entry.content:
@@ -72,7 +85,6 @@ def extract_image_url(entry):
 
     full_html = ' '.join(html_sources)
 
-    # 4. Search for lazy-loaded image attributes (data-src, data-lazy-src, src)
     candidate_urls = re.findall(
         r'(?:src|data-src|data-lazy-src|srcset)=["\'](https?://[^"\']+\.(?:jpg|jpeg|png|webp)[^"\']*)["\']',
         full_html,
@@ -99,61 +111,78 @@ def extract_image_url(entry):
 
 
 class Command(BaseCommand):
-    help = 'Fetches Nigerian news feeds and filters specifically for government & civic topics with images.'
+    help = 'Fetches categorized news feeds safely across Governance, Tech, Business, and Society.'
 
     def handle(self, *args, **options):
         saved_count = 0
 
-        for source_name, url in FEEDS:
-            self.stdout.write(f'Scanning feed: {source_name}...')
-            feed = feedparser.parse(url)
+        for feed_info in FEED_CONFIG:
+            source = feed_info['source']
+            url = feed_info['url']
+            category = feed_info['category']
+
+            self.stdout.write(f'Scanning [{category.upper()}] feed: {source}...')
+
+            # Safely fetch content with requests before passing to feedparser
+            try:
+                response = requests.get(
+                    url, headers=HTTP_HEADERS, timeout=12, verify=True
+                )
+                response.raise_for_status()
+                feed = feedparser.parse(response.content)
+            except Exception as e:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f'   └── Skipping {source} due to connection error: {e}'
+                    )
+                )
+                continue
 
             for entry in feed.entries:
-                title = entry.title
+                title = getattr(entry, 'title', '').strip()
+                if not title:
+                    continue
+
                 summary = getattr(entry, 'summary', '') or getattr(
                     entry, 'description', ''
                 )
-                combined_text = f'{title} {summary}'.lower()
+                link = getattr(entry, 'link', '')
+                if not link:
+                    continue
 
-                if any(keyword in combined_text for keyword in GOV_KEYWORDS):
-                    link = entry.link
-                    image_url = extract_image_url(entry)
+                image_url = extract_image_url(entry)
 
-                    parsed_date = None
-                    if (
-                        hasattr(entry, 'published_parsed')
-                        and entry.published_parsed
-                    ):
-                        naive_dt = datetime.fromtimestamp(
-                            time.mktime(entry.published_parsed)
-                        )
-                        parsed_date = timezone.make_aware(naive_dt)
-
-                    article, created = GovernmentNewsArticle.objects.get_or_create(
-                        link=link,
-                        defaults={
-                            'title': title,
-                            'source': source_name,
-                            'summary': summary,
-                            'image_url': image_url,
-                            'published_date': parsed_date,
-                        },
+                parsed_date = None
+                if (
+                    hasattr(entry, 'published_parsed')
+                    and entry.published_parsed
+                ):
+                    naive_dt = datetime.fromtimestamp(
+                        time.mktime(entry.published_parsed)
                     )
+                    parsed_date = timezone.make_aware(naive_dt)
 
-                    # Update existing record if image URL was previously missing or updated
-                    if (
-                        not created
-                        and image_url
-                        and article.image_url != image_url
-                    ):
-                        article.image_url = image_url
-                        article.save()
+                article, created = GovernmentNewsArticle.objects.get_or_create(
+                    link=link,
+                    defaults={
+                        'title': title,
+                        'source': source,
+                        'summary': summary,
+                        'image_url': image_url,
+                        'published_date': parsed_date,
+                        'category': category,
+                    },
+                )
 
-                    if created:
-                        saved_count += 1
+                if not created and image_url and article.image_url != image_url:
+                    article.image_url = image_url
+                    article.save()
+
+                if created:
+                    saved_count += 1
 
         self.stdout.write(
             self.style.SUCCESS(
-                f'Sync complete. Ingested {saved_count} government news articles.'
+                f'Sync complete. Ingested {saved_count} new categorized articles.'
             )
         )

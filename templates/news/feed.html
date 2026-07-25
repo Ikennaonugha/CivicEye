@@ -40,6 +40,21 @@
     </div>
   </div>
 
+  <!-- Category Navigation Filter Pills -->
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    <a href="?category=all{% if query %}&q={{ query }}{% endif %}" 
+      class="btn btn-sm {% if selected_category == 'all' or not selected_category %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+      All Topics
+    </a>
+
+    {% for cat_code, cat_label in categories %}
+      <a href="?category={{ cat_code }}{% if query %}&q={{ query }}{% endif %}" 
+        class="btn btn-sm {% if selected_category == cat_code %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-3">
+        {{ cat_label }}
+      </a>
+    {% endfor %}
+  </div>
+
   <!-- News Cards Grid -->
   <div class="row">
     {% for article in news_articles %}
