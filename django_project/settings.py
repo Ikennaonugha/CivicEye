@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'procurement',
     'dashboard.apps.DashboardConfig',
+    'news.apps.NewsConfig',
 ]
 
 MIDDLEWARE = [

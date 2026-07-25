@@ -1,0 +1,304 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.lineicons.com/4.0/lineicons.css" />
+
+<style>
+  .kpi-number.fade {
+    transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+    opacity: 0;
+    transform: translateY(6px);
+    display: inline-block;
+  }
+  .kpi-number.fade.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<!-- ====== Banner Start ====== -->
+<section class="ud-page-banner mb-4">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="ud-banner-content">
+          <h1>Procurement Analytics Dashboard</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container-fluid p-0">
+
+  <!-- 1. KPI Stat Cards -->
+  <div class="row">
+    <div class="col-sm-6 col-xl-3 d-flex mb-4">
+      <div class="ud-404-wrapper flex-fill w-100 p-4 shadow-sm bg-white rounded">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="ud-404-subtitle mb-0">Total Budget Volume</h5>
+          <div class="stat text-primary"><i class="lni lni-dollar" style="font-size: 24px;"></i></div>
+        </div>
+        <h2 class="ud-404-title my-2">NGN <span id="formattedVolume" class="fade kpi-number">0.00</span></h2>
+        <p class="text-muted mb-0 small">Total Allocated</p>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3 d-flex mb-4">
+      <div class="ud-404-wrapper flex-fill w-100 p-4 shadow-sm bg-white rounded">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="ud-404-subtitle mb-0">Unique Processes</h5>
+          <div class="stat text-primary"><i class="lni lni-control-panel" style="font-size: 24px;"></i></div>
+        </div>
+        <h2 class="ud-404-title my-2"><span class="fade kpi-number">{{ total_processes }}</span></h2>
+        <p class="text-muted mb-0 small">OCIDs Tracked</p>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3 d-flex mb-4">
+      <div class="ud-404-wrapper flex-fill w-100 p-4 shadow-sm bg-white rounded">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="ud-404-subtitle mb-0">Active Buyers</h5>
+          <div class="stat text-primary"><i class="lni lni-users" style="font-size: 24px;"></i></div>
+        </div>
+        <h2 class="ud-404-title my-2"><span class="fade kpi-number">{{ total_buyers }}</span></h2>
+        <p class="text-muted mb-0 small">Public Entities</p>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3 d-flex mb-4">
+      <div class="ud-404-wrapper flex-fill w-100 p-4 shadow-sm bg-white rounded">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="ud-404-subtitle mb-0">Ingested Releases</h5>
+          <div class="stat text-primary"><i class="lni lni-layers" style="font-size: 24px;"></i></div>
+        </div>
+        <h2 class="ud-404-title my-2"><span class="fade kpi-number">{{ total_releases }}</span></h2>
+        <p class="text-muted mb-0 small">Contracting Releases</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Charts Section -->
+  <div class="row">
+    <div class="col-xl-8 d-flex mb-4">
+      <div class="ud-404-wrapper flex-fill w-100 p-4 shadow-sm bg-white rounded">
+        <div class="ud-404-content mb-3"><h4 class="ud-404-subtitle fw-bold">Top 5 Buyers by Budget</h4></div>
+        <div class="chart chart-sm" style="height: 320px; position: relative;"><canvas id="buyersChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 d-flex mb-4">
+      <div class="ud-404-wrapper flex-fill w-100 p-4 shadow-sm bg-white rounded">
+        <div class="ud-404-content mb-3"><h4 class="ud-404-subtitle fw-bold">Tender Status Breakdown</h4></div>
+        <div class="chart chart-sm" style="height: 320px; position: relative;"><canvas id="statusChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. DATABASE SEARCH & INTERACTIVE TABLE -->
+  <div class="row">
+    <div class="col-12 d-flex mb-4">
+      <div class="ud-404-wrapper flex-fill w-100 p-4 shadow-sm bg-white rounded">
+        
+        <!-- Search Form (Submits to Backend Database) -->
+        <form method="GET" action="" class="mb-3">
+          <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+              <h5 class="fw-bold mb-0">Database Search</h5>
+              <p class="text-muted small mb-0">
+                {% if matching_count is not None %}
+                  Found <strong>{{ matching_count }}</strong> matching record(s) in database
+                {% else %}
+                  Search across all procurement records
+                {% endif %}
+              </p>
+            </div>
+            
+            <div class="d-flex flex-column gap-2">
+              <div class="d-flex flex-wrap gap-2 align-items-center">
+                <!-- Keyword Input -->
+                <div class="input-group input-group-sm" style="width: 240px;">
+                  <span class="input-group-text bg-light border-end-0"><i class="lni lni-search-alt"></i></span>
+                  <input type="text" name="q" class="form-control border-start-0" placeholder="Search keywords..." value="{{ query }}">
+                </div>
+                
+                <!-- Status Dropdown Filter -->
+                <select name="status" class="form-select form-select-sm" style="width: 140px;">
+                  <option value="">All Statuses</option>
+                  <option value="active" {% if selected_status == 'active' %}selected{% endif %}>Active</option>
+                  <option value="complete" {% if selected_status == 'complete' %}selected{% endif %}>Complete</option>
+                  <option value="planned" {% if selected_status == 'planned' %}selected{% endif %}>Planned</option>
+                  <option value="cancelled" {% if selected_status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                  <option value="unsuccessful" {% if selected_status == 'unsuccessful' %}selected{% endif %}>Unsuccessful</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary btn-sm px-3">Search</button>
+                {% if query or selected_status %}
+                  <a href="?" class="btn btn-outline-secondary btn-sm">Reset</a>
+                {% endif %}
+              </div>
+
+              <!-- Field Target Checkboxes -->
+              <div class="d-flex align-items-center gap-3 small text-muted">
+                <span class="fw-semibold">Search in:</span>
+                <div class="form-check form-check-inline m-0">
+                  <input class="form-check-input" type="checkbox" name="scope_title" id="chkTitle" {% if search_title %}checked{% endif %}>
+                  <label class="form-check-label" for="chkTitle">Project Title</label>
+                </div>
+                <div class="form-check form-check-inline m-0">
+                  <input class="form-check-input" type="checkbox" name="scope_buyer" id="chkBuyer" {% if search_buyer %}checked{% endif %}>
+                  <label class="form-check-label" for="chkBuyer">Buyer Name</label>
+                </div>
+                <div class="form-check form-check-inline m-0">
+                  <input class="form-check-input" type="checkbox" name="scope_ocid" id="chkOcid" {% if search_ocid %}checked{% endif %}>
+                  <label class="form-check-label" for="chkOcid">OCID / ID</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Table -->
+        <div class="table-responsive">
+          <table class="table table-hover align-middle my-0" id="procurementTable">
+            <thead class="table-light">
+              <tr>
+                <th>OCID</th>
+                <th>Release ID</th>
+                <th>Date</th>
+                <th>Buyer</th>
+                <th>Tender Title</th>
+                <th>Budget (NGN)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in recent_releases %}
+              <tr>
+                <td class="fw-medium text-nowrap">{{ item.ocid }}</td>
+                <td class="text-nowrap">{{ item.release_id }}</td>
+                <td class="text-nowrap">{{ item.date|date:"Y-m-d"|default:"N/A" }}</td>
+                <td>{{ item.buyer_name|default:"N/A" }}</td>
+                <td>{{ item.tender_title|truncatechars:40|default:"N/A" }}</td>
+                <td class="fw-bold text-nowrap">{{ item.budget_amount|floatformat:2|default:"0.00" }}</td>
+                <td>
+                  <span class="badge bg-secondary">{{ item.tender_status|default:"Unknown" }}</span>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">No matching database records found.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    
+    function formatCompactNumber(num) {
+      if (isNaN(num) || num === 0) return "0.00";
+      const absNum = Math.abs(num);
+
+      if (absNum >= 1e12) return (num / 1e12).toFixed(2) + ' Trillion';
+      if (absNum >= 1e9)  return (num / 1e9).toFixed(2) + ' Billion';
+      if (absNum >= 1e6)  return (num / 1e6).toFixed(2) + ' Million';
+      if (absNum >= 1e3)  return (num / 1e3).toFixed(2) + ' Thousand';
+      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // 1. Format Total Budget Volume KPI Card
+    const rawVolume = parseFloat("{{ total_volume|default:0 }}");
+    const volumeElem = document.getElementById('formattedVolume');
+    if (volumeElem) {
+      volumeElem.textContent = formatCompactNumber(rawVolume);
+    }
+
+    // 2. Trigger Fade-in Animation
+    setTimeout(function() {
+      document.querySelectorAll('.kpi-number').forEach(function(elem) {
+        elem.classList.add('show');
+      });
+    }, 100);
+
+    // 3. Shorten Buyer Labels
+    const rawBuyerLabels = {{ buyer_labels|safe|default:"[]" }};
+    const shortBuyerLabels = rawBuyerLabels.map(label => {
+      if (!label) return 'N/A';
+      const maxLen = 22;
+      if (label.length <= maxLen) return label;
+      const truncated = label.substring(0, maxLen);
+      const lastSpace = truncated.lastIndexOf(' ');
+      return (lastSpace > 0 ? truncated.substring(0, lastSpace) : truncated) + '…';
+    });
+
+    // 4. Top Buyers Line Chart
+    const buyersCtx = document.getElementById('buyersChart').getContext('2d');
+    const gradient = buyersCtx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(59, 125, 221, 0.25)');
+    gradient.addColorStop(1, 'rgba(59, 125, 221, 0.00)');
+
+    new Chart(buyersCtx, {
+      type: 'line',
+      data: {
+        labels: shortBuyerLabels,
+        datasets: [{
+          label: 'Total Budget (NGN)',
+          data: {{ buyer_data|safe|default:"[]" }},
+          borderColor: '#3b7ddd',
+          backgroundColor: gradient,
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: '#3b7ddd',
+          pointBorderColor: '#ffffff',
+          pointRadius: 6
+        }]
+      },
+      options: { 
+        responsive: true, 
+        maintainAspectRatio: false,
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            beginAtZero: true,
+            ticks: { callback: value => formatCompactNumber(value) }
+          }
+        },
+        plugins: { 
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: tooltipItems => rawBuyerLabels[tooltipItems[0].dataIndex] || '',
+              label: context => ' Budget: NGN ' + formatCompactNumber(context.parsed.y)
+            }
+          }
+        } 
+      }
+    });
+
+    // 5. Tender Status Donut Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+      type: 'doughnut',
+      data: {
+        labels: {{ status_labels|safe|default:"[]" }},
+        datasets: [{
+          data: {{ status_data|safe|default:"[]" }},
+          backgroundColor: ['#1cbb8c', '#fcb92c', '#dc3545', '#0dcaf0', '#6c757d']
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+
+  });
+</script>
+{% endblock %}
