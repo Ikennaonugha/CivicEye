@@ -13,31 +13,61 @@
   <div class="ud-footer-widgets">
     <div class="container">
       <div class="row">
-        <div class="col-xl-3 col-lg-4 col-md-6">
+
+        <!-- Column 1: Brand Info -->
+        <div class="col-xl-4 col-lg-4 col-md-6">
           <div class="ud-widget">
             <a href="{% url 'home' %}" class="ud-footer-logo">
               <img src="{% static 'images/logo/logo.svg' %}" alt="CivicEye Logo" />
             </a>
             <p class="ud-widget-desc">
-              Civic governance and public accountability platform.
+              Civic governance and public accountability platform empowering citizens through open project monitoring.
             </p>
           </div>
         </div>
 
+        <!-- Column 2: Main Navigation -->
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6">
           <div class="ud-widget">
-            <h5 class="ud-widget-title">Quick Links</h5>
+            <h5 class="ud-widget-title">Navigation</h5>
             <ul class="ud-widget-links">
-              <li><a href="#home">Home</a></li>
-              <li><a href="#dashboard">Dashboard</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li><a href="{% url 'home' %}">Home</a></li>
+              <li><a href="{% url 'dashboard_home' %}">Dashboard</a></li>
+              <li><a href="{% url 'home' %}#about">About</a></li>
             </ul>
           </div>
         </div>
+
+        <!-- Column 3: Civic Features -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+          <div class="ud-widget">
+            <h5 class="ud-widget-title">Civic Tools</h5>
+            <ul class="ud-widget-links">
+              <li><a href="{% url 'flags:project_list' %}">Civic Flags & Projects</a></li>
+              <li><a href="{% url 'news_feed' %}">News Feed</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Column 4: Account Links -->
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+          <div class="ud-widget">
+            <h5 class="ud-widget-title">Account</h5>
+            <ul class="ud-widget-links">
+              {% if user.is_authenticated %}
+                <li><a href="{% url 'account_logout' %}">Log Out</a></li>
+              {% else %}
+                <li><a href="{% url 'account_login' %}">Log In</a></li>
+                <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
+
   <div class="ud-footer-bottom">
     <div class="container">
       <div class="row">
