@@ -65,6 +65,15 @@ class CivicFlag(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+        related_name='reported_flags',
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='flags',
     )
 
     issue_type = models.CharField(max_length=50, choices=FLAG_TYPES)
@@ -83,6 +92,9 @@ class CivicFlag(models.Model):
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='pending'
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

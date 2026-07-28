@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.project_list_view, name='project_list'),
     path(
         'project/<int:project_id>/flag/',
-        views.submit_flag_view,
+        views.submit_flag,
         name='submit_flag',
     ),
     path(

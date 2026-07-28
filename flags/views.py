@@ -3,7 +3,7 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CivicFlagForm
-from .models import ProcurementProject
+from .models import ProcurementProject, CivicFlag
 
 # List of all 20 official Lagos Local Government Areas
 LAGOS_LGAS = [
@@ -54,31 +54,59 @@ def project_list_view(request):
     return render(request, 'flags/project_list.html', context)
 
 
-def submit_flag_view(request, project_id):
-    """Handles submission of civic flags/reports for a specific project."""
+def get_client_ip(request):
+    """Utility helper to capture the client's real IP address."""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
+def submit_flag(request, project_id):
     project = get_object_or_404(ProcurementProject, pk=project_id)
 
     if request.method == 'POST':
         form = CivicFlagForm(request.POST, request.FILES)
+
+        # 1. Validate Form & CAPTCHA first (applies to ALL users)
         if form.is_valid():
+            user_ip = get_client_ip(request)
+
+            # 2. Total Submissions Limit Check for Unauthenticated / Guest Users
+            if not request.user.is_authenticated:
+                total_guest_flags = CivicFlag.objects.filter(ip_address=user_ip).count()
+
+                if total_guest_flags >= 2:
+                    messages.error(
+                        request,
+                        "Guest users are limited to 2 total flag reports. Please log in or create an account to file additional flags."
+                    )
+                    return render(request, 'flags/submit_flag.html', {
+                        'form': form,
+                        'project': project,
+                    })
+
+            # 3. Save Submission
             flag = form.save(commit=False)
             flag.project = project
+            flag.ip_address = user_ip
+
             if request.user.is_authenticated:
                 flag.user = request.user
+
             flag.save()
-            messages.success(
-                request,
-                'Your report has been submitted and flagged for audit.',
-            )
+
+            messages.success(request, "Your civic flag report has been submitted successfully.")
             return redirect('flags:project_list')
     else:
         form = CivicFlagForm()
 
-    context = {
-        'project': project,
+    return render(request, 'flags/submit_flag.html', {
         'form': form,
-    }
-    return render(request, 'flags/submit_flag.html', context)
+        'project': project,
+    })
 
 def project_detail_view(request, project_id):
     """Displays detailed procurement project information and all public civic flags."""
