@@ -39,13 +39,8 @@
             </div>
           </form>
 
-          <!-- Password Reset & Signup Links -->
+          <!-- Signup Links -->
           <div class="text-center mt-4">
-            {% if account_reset_password_url or 'account_reset_password' in request.resolver_match.url_name %}
-              <a class="forget-pass d-block mb-2" href="{% url 'account_reset_password' %}">
-                Forgot Password?
-              </a>
-            {% endif %}
             <p class="signup-option mb-0">
               Not a member yet? <a href="{% url 'account_signup' %}">Sign Up</a>
             </p>

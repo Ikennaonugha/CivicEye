@@ -6,7 +6,7 @@
       <div class="col-lg-12">
         <nav class="navbar navbar-expand-lg">
           <a class="navbar-brand" href="{% url 'home' %}">
-            <img src="{% static 'images/logo/logo.svg' %}" alt="CivicEye Logo" />
+            <img src="{% static 'images/logo/logo1.svg' %}" style="height:55px;width:157px" alt="CivicEye Logo" />
           </a>
           
           <!-- Accessible Navbar Toggler -->
@@ -27,12 +27,14 @@
           <!-- Collapsible Navigation Container -->
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul id="nav" class="navbar-nav mx-auto">
-              <li class="nav-item">
-                <a class="ud-menu-scroll" href="{% url 'home' %}#home">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="ud-menu-scroll" href="{% url 'home' %}#about">About</a>
-              </li>
+              {% if not user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="ud-menu-scroll" href="{% url 'home' %}#home">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="ud-menu-scroll" href="{% url 'home' %}#about">About</a>
+                </li>
+              {% endif %}
               <li class="nav-item">
                 <a class="ud-menu-scroll" href="{% url 'dashboard_home' %}">Dashboard</a>
               </li>

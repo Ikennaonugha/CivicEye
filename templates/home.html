@@ -29,10 +29,9 @@
         <div class="col-lg-12">
           <div class="ud-section-title">
             <span>Features</span>
-            <h2>Main Features of Play</h2>
+            <h2>Key Features of CivicEye</h2>
             <p>
-              There are many variations of passages of Lorem Ipsum available
-              but the majority have suffered alteration in some form.
+              Connecting official Lagos State procurement data with direct community oversight to foster transparency and accountability in public spending.
             </p>
           </div>
         </div>
@@ -41,15 +40,15 @@
         <div class="col-xl-3 col-lg-3 col-sm-6">
           <div class="ud-single-feature wow fadeInUp" data-wow-delay=".1s">
             <div class="ud-feature-icon">
-              <i class="lni lni-gift"></i>
+              <i class="lni lni-map-marker"></i>
             </div>
             <div class="ud-feature-content">
-              <h3 class="ud-feature-title">Free and Open-Source</h3>
+              <h3 class="ud-feature-title">LGA Project Tracking</h3>
               <p class="ud-feature-desc">
-                Lorem Ipsum is simply dummy text of the printing and industry.
+                Filter, search, and monitor public infrastructure contracts across all 20 Local Government Areas in Lagos State.
               </p>
-              <a href="javascript:void(0)" class="ud-feature-link">
-                Learn More
+              <a href="{% url 'flags:project_list' %}" class="ud-feature-link">
+                Explore Projects
               </a>
             </div>
           </div>
@@ -57,15 +56,15 @@
         <div class="col-xl-3 col-lg-3 col-sm-6">
           <div class="ud-single-feature wow fadeInUp" data-wow-delay=".15s">
             <div class="ud-feature-icon">
-              <i class="lni lni-move"></i>
+              <i class="lni lni-flag"></i>
             </div>
             <div class="ud-feature-content">
-              <h3 class="ud-feature-title">Multipurpose Template</h3>
+              <h3 class="ud-feature-title">Civic Flagging & Audit</h3>
               <p class="ud-feature-desc">
-                Lorem Ipsum is simply dummy text of the printing and industry.
+                Report project delays, substandard work, or contract fraud with site photo evidence and automatic GPS verification.
               </p>
-              <a href="javascript:void(0)" class="ud-feature-link">
-                Learn More
+              <a href="{% url 'flags:project_list' %}" class="ud-feature-link">
+                Report Issue
               </a>
             </div>
           </div>
@@ -73,15 +72,15 @@
         <div class="col-xl-3 col-lg-3 col-sm-6">
           <div class="ud-single-feature wow fadeInUp" data-wow-delay=".2s">
             <div class="ud-feature-icon">
-              <i class="lni lni-layout"></i>
+              <i class="lni lni-database"></i>
             </div>
             <div class="ud-feature-content">
-              <h3 class="ud-feature-title">High-quality Design</h3>
+              <h3 class="ud-feature-title">Open Contracting Data</h3>
               <p class="ud-feature-desc">
-                Lorem Ipsum is simply dummy text of the printing and industry.
+                Integrated with OCDS standards to provide full public transparency on budgets, procuring entities, and timelines.
               </p>
-              <a href="javascript:void(0)" class="ud-feature-link">
-                Learn More
+              <a href="{% url 'flags:project_list' %}" class="ud-feature-link">
+                View Open Data
               </a>
             </div>
           </div>
@@ -89,15 +88,15 @@
         <div class="col-xl-3 col-lg-3 col-sm-6">
           <div class="ud-single-feature wow fadeInUp" data-wow-delay=".25s">
             <div class="ud-feature-icon">
-              <i class="lni lni-layers"></i>
+              <i class="lni lni-stats-up"></i>
             </div>
             <div class="ud-feature-content">
-              <h3 class="ud-feature-title">All Essential Elements</h3>
+              <h3 class="ud-feature-title">Analytical Dashboard</h3>
               <p class="ud-feature-desc">
-                Lorem Ipsum is simply dummy text of the printing and industry.
+                Track state-wide capital expenditure, monitor completion statuses, and analyze public civic flag trends at a glance.
               </p>
-              <a href="javascript:void(0)" class="ud-feature-link">
-                Learn More
+              <a href="{% url 'dashboard_home' %}" class="ud-feature-link">
+                View Analytics
               </a>
             </div>
           </div>
@@ -113,21 +112,16 @@
       <div class="ud-about-wrapper wow fadeInUp" data-wow-delay=".2s">
         <div class="ud-about-content-wrapper">
           <div class="ud-about-content">
-            <span class="tag">About Us</span>
-            <h2>Brilliant Toolkit to Build Nextgen Website Faster.</h2>
+            <span class="tag">About CivicEye</span>
+            <h2>Empowering Citizens Through Transparent Public Procurement.</h2>
             <p>
-              The main ‘thrust’ is to focus on educating attendees on how to
-              best protect highly vulnerable business applications with
-              interactive panel discussions and roundtables led by subject
-              matter experts.
+              CivicEye bridges the gap between official public procurement records and real-world execution across Lagos State. By ingesting open procurement data (OCDS), we make public contract details, allocated budgets, and assigned contractors fully accessible to every resident.
             </p>
 
             <p>
-              The main ‘thrust’ is to focus on educating attendees on how to
-              best protect highly vulnerable business applications with
-              interactive panel.
+              Through community-driven auditing, citizens can verify project sites, submit civic flags with photo evidence and GPS tags, and hold procuring entities and contractors accountable for delayed or substandard public infrastructure.
             </p>
-            <a href="javascript:void(0)" class="ud-main-btn">Learn More</a>
+            <a href="{% url 'flags:project_list' %}" class="ud-main-btn">Explore Projects Feed</a>
           </div>
         </div>
         <div class="ud-about-image">
@@ -148,10 +142,9 @@
         <div class="col-lg-12">
           <div class="ud-section-title text-center mx-auto">
             <span>FAQ</span>
-            <h2>Any Questions? Answered</h2>
+            <h2>Frequently Asked Questions</h2>
             <p>
-              There are many variations of passages of Lorem Ipsum available
-              but the majority have suffered alteration in some form.
+              Got questions about public project tracking, civic flagging, or data transparency on CivicEye? Find answers below.
             </p>
           </div>
         </div>
@@ -169,15 +162,11 @@
                 <span class="icon flex-shrink-0">
                   <i class="lni lni-chevron-down"></i>
                 </span>
-                <span>How to use UIdeck?</span>
+                <span>What is CivicEye?</span>
               </button>
               <div id="collapseOne" class="accordion-collapse collapse">
                 <div class="ud-faq-body">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a
-                  type specimen book.
+                  CivicEye is a civic technology platform designed to foster transparency, accountability, and citizen oversight in Lagos State public procurement. It allows residents to track government-funded infrastructure projects across all 20 LGAs and report real-world execution issues.
                 </div>
               </div>
             </div>
@@ -192,15 +181,11 @@
                 <span class="icon flex-shrink-0">
                   <i class="lni lni-chevron-down"></i>
                 </span>
-                <span>How to download icons from Lineicons?</span>
+                <span>Where does the project and budget data come from?</span>
               </button>
               <div id="collapseTwo" class="accordion-collapse collapse">
                 <div class="ud-faq-body">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a
-                  type specimen book.
+                  CivicEye integrates open public procurement records structured under the Open Contracting Data Standard (OCDS), sourced from official state portals like the Lagos State Public Procurement Agency (LSPPA).
                 </div>
               </div>
             </div>
@@ -215,15 +200,11 @@
                 <span class="icon flex-shrink-0">
                   <i class="lni lni-chevron-down"></i>
                 </span>
-                <span>Is GrayGrids part of UIdeck?</span>
+                <span>How do I submit a flag or report a project issue?</span>
               </button>
               <div id="collapseThree" class="accordion-collapse collapse">
                 <div class="ud-faq-body">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a
-                  type specimen book.
+                  Search for a project in your Local Government Area, click "Submit Flag," and upload photo evidence from the site. CivicEye automatically captures GPS verification to validate that reports originate from actual project locations.
                 </div>
               </div>
             </div>
@@ -240,15 +221,11 @@
                 <span class="icon flex-shrink-0">
                   <i class="lni lni-chevron-down"></i>
                 </span>
-                <span>Can I use this template for commercial project?</span>
+                <span>Can I report project issues anonymously?</span>
               </button>
               <div id="collapseFour" class="accordion-collapse collapse">
                 <div class="ud-faq-body">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a
-                  type specimen book.
+                  Yes, citizen safety and privacy are priorities. You can choose to submit civic flags anonymously while still contributing verified evidence to the public record.
                 </div>
               </div>
             </div>
@@ -263,15 +240,11 @@
                 <span class="icon flex-shrink-0">
                   <i class="lni lni-chevron-down"></i>
                 </span>
-                <span>Do you have plan releasing Play Pro?</span>
+                <span>What happens after a flag is submitted?</span>
               </button>
               <div id="collapseFive" class="accordion-collapse collapse">
                 <div class="ud-faq-body">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a
-                  type specimen book.
+                  Submitted flags are displayed on public project profiles and analytical dashboards. Civil society organizations (CSOs), investigative journalists, and government oversight bodies use this data to investigate and push for project completion.
                 </div>
               </div>
             </div>
@@ -286,15 +259,11 @@
                 <span class="icon flex-shrink-0">
                   <i class="lni lni-chevron-down"></i>
                 </span>
-                <span>Where and how to host this template?</span>
+                <span>How can CSOs and government officials use CivicEye?</span>
               </button>
               <div id="collapseSix" class="accordion-collapse collapse">
                 <div class="ud-faq-body">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a
-                  type specimen book.
+                  Stakeholders can utilize our analytical dashboards to evaluate capital expenditure efficiency, track completion rates across LGAs, and identify high-priority community concerns in real time.
                 </div>
               </div>
             </div>
@@ -312,16 +281,16 @@
         <div class="col-lg-12">
           <div class="ud-section-title mx-auto text-center">
             <span>Testimonials</span>
-            <h2>What our Customers Says</h2>
+            <h2>What Our Community Says</h2>
             <p>
-              There are many variations of passages of Lorem Ipsum available
-              but the majority have suffered alteration in some form.
+              Discover how citizens, CSOs, and journalists are using CivicEye to track Lagos State infrastructure and demand accountability.
             </p>
           </div>
         </div>
       </div>
 
       <div class="row">
+        <!-- Testimonial 1 -->
         <div class="col-lg-4 col-md-6">
           <div
             class="ud-single-testimonial wow fadeInUp"
@@ -336,24 +305,25 @@
             </div>
             <div class="ud-testimonial-content">
               <p>
-                “Our members are so impressed. It's intuitive. It's clean.
-                It's distraction free. If you're building a community.
+                “We had an abandoned road project in Alimosho for months with no answers. Through CivicEye, I submitted a photo flag with GPS proof. Within weeks, the local CDA and contractor responded.”
               </p>
             </div>
             <div class="ud-testimonial-info">
               <div class="ud-testimonial-image">
                 <img
                   src="{% static 'images/testimonials/author-01.png' %}"
-                  alt="author"
+                  alt="Bisi Adebayo"
                 />
               </div>
               <div class="ud-testimonial-meta">
-                <h4>Sabo Masties</h4>
-                <p>Founder @UIdeck</p>
+                <h4>Bisi Adebayo</h4>
+                <p>Community Resident, Alimosho LGA</p>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Testimonial 2 -->
         <div class="col-lg-4 col-md-6">
           <div
             class="ud-single-testimonial wow fadeInUp"
@@ -368,24 +338,25 @@
             </div>
             <div class="ud-testimonial-content">
               <p>
-                “Our members are so impressed. It's intuitive. It's clean.
-                It's distraction free. If you're building a community.
+                “CivicEye's integration of OCDS open procurement data simplifies our public budget research. We can easily map government allocations to actual site progress in real time.”
               </p>
             </div>
             <div class="ud-testimonial-info">
               <div class="ud-testimonial-image">
                 <img
                   src="{% static 'images/testimonials/author-02.png' %}"
-                  alt="author"
+                  alt="Chidi Nwachukwu"
                 />
               </div>
               <div class="ud-testimonial-meta">
-                <h4>Margin Gesmu</h4>
-                <p>Founder @Lineicons</p>
+                <h4>Chidi Nwachukwu</h4>
+                <p>Lead Researcher, Open Governance Initiative</p>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Testimonial 3 -->
         <div class="col-lg-4 col-md-6">
           <div
             class="ud-single-testimonial wow fadeInUp"
@@ -400,55 +371,19 @@
             </div>
             <div class="ud-testimonial-content">
               <p>
-                “Our members are so impressed. It's intuitive. It's clean.
-                It's distraction free. If you're building a community.
+                “Having direct access to contractor data alongside citizen site photos gives us the exact evidence needed to report accurately on state capital expenditure projects.”
               </p>
             </div>
             <div class="ud-testimonial-info">
               <div class="ud-testimonial-image">
                 <img
                   src="{% static 'images/testimonials/author-03.png' %}"
-                  alt="author"
+                  alt="Funke Ojo"
                 />
               </div>
               <div class="ud-testimonial-meta">
-                <h4>William Smith</h4>
-                <p>Founder @GrayGrids</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="ud-brands wow fadeInUp" data-wow-delay=".2s">
-            <div class="ud-title">
-              <h6>Trusted and Used by</h6>
-            </div>
-            <div class="ud-brands-logo">
-              <div class="ud-single-logo">
-                <img src="{% static 'images/brands/ayroui.svg' %}" alt="ayroui" />
-              </div>
-              <div class="ud-single-logo">
-                <img src="{% static 'images/brands/uideck.svg' %}" alt="uideck" />
-              </div>
-              <div class="ud-single-logo">
-                <img
-                  src="{% static 'images/brands/graygrids.svg' %}"
-                  alt="graygrids"
-                />
-              </div>
-              <div class="ud-single-logo">
-                <img
-                  src="{% static 'images/brands/lineicons.svg' %}"
-                  alt="lineicons"
-                />
-              </div>
-              <div class="ud-single-logo">
-                <img
-                  src="{% static 'images/brands/ecommerce-html.svg' %}"
-                  alt="ecommerce-html"
-                />
+                <h4>Funke Ojo</h4>
+                <p>Investigative Data Journalist</p>
               </div>
             </div>
           </div>
@@ -457,28 +392,29 @@
     </div>
   </section>
   <!-- ====== Testimonials End ====== -->
-  <!-- Team Start -->
-  <section id="team" class="ud-team">
+
+  <!-- Serve Start -->
+  <section id="who-we-serve" class="ud-team">
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
           <div class="ud-section-title mx-auto text-center">
-            <span>Our Team</span>
-            <h2>Meet The Team</h2>
+            <span>Who We Serve</span>
+            <h2>Empowering Every Stakeholder</h2>
             <p>
-              There are many variations of passages of Lorem Ipsum available
-              but the majority have suffered alteration in some form.
+              CivicEye bridges the gap between public procurement data and real-world project execution for citizens, researchers, journalists, and government bodies.
             </p>
           </div>
         </div>
       </div>
 
       <div class="row">
+        <!-- Stakeholder 1: Citizens & CDAs -->
         <div class="col-xl-3 col-lg-3 col-sm-6">
           <div class="ud-single-team wow fadeInUp" data-wow-delay=".1s">
             <div class="ud-team-image-wrapper">
               <div class="ud-team-image">
-                <img src="{% static 'images/team/team-01.png' %}" alt="team" />
+                <img src="{% static 'images/team/team-01.png' %}" alt="Citizens and CDAs" />
               </div>
 
               <img
@@ -493,33 +429,21 @@
               />
             </div>
             <div class="ud-team-info">
-              <h5>Adveen Desuza</h5>
-              <h6>UI Designer</h6>
+              <h5>Citizens & CDAs</h5>
+              <h6>Grassroots Oversight</h6>
+              <p class="mt-2 text-sm" style="font-size: 14px; color: #637381; padding: 0 10px;">
+                Track schools, roads, and healthcare projects in your LGA and submit photo updates from the ground.
+              </p>
             </div>
-            <ul class="ud-team-socials">
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-facebook-filled"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-twitter-filled"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-instagram-filled"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
+
+        <!-- Stakeholder 2: Civil Society Organizations -->
         <div class="col-xl-3 col-lg-3 col-sm-6">
           <div class="ud-single-team wow fadeInUp" data-wow-delay=".15s">
             <div class="ud-team-image-wrapper">
               <div class="ud-team-image">
-                <img src="{% static 'images/team/team-02.png' %}" alt="team" />
+                <img src="{% static 'images/team/team-02.png' %}" alt="Civil Society Organizations" />
               </div>
 
               <img
@@ -534,33 +458,21 @@
               />
             </div>
             <div class="ud-team-info">
-              <h5>Jezmin uniya</h5>
-              <h6>Product Designer</h6>
+              <h5>Civil Society (CSOs)</h5>
+              <h6>Advocacy & Research</h6>
+              <p class="mt-2 text-sm" style="font-size: 14px; color: #637381; padding: 0 10px;">
+                Access structured OCDS open procurement data to drive evidence-based advocacy and policy reform.
+              </p>
             </div>
-            <ul class="ud-team-socials">
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-facebook-filled"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-twitter-filled"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-instagram-filled"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
+
+        <!-- Stakeholder 3: Data & Investigative Journalists -->
         <div class="col-xl-3 col-lg-3 col-sm-6">
           <div class="ud-single-team wow fadeInUp" data-wow-delay=".2s">
             <div class="ud-team-image-wrapper">
               <div class="ud-team-image">
-                <img src="{% static 'images/team/team-03.png' %}" alt="team" />
+                <img src="{% static 'images/team/team-03.png' %}" alt="Data Journalists" />
               </div>
 
               <img
@@ -575,33 +487,21 @@
               />
             </div>
             <div class="ud-team-info">
-              <h5>Andrieo Gloree</h5>
-              <h6>App Developer</h6>
+              <h5>Data Journalists</h5>
+              <h6>Investigative Reporting</h6>
+              <p class="mt-2 text-sm" style="font-size: 14px; color: #637381; padding: 0 10px;">
+                Cross-reference official state contract awards with verified ground photos to report accurately.
+              </p>
             </div>
-            <ul class="ud-team-socials">
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-facebook-filled"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-twitter-filled"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-instagram-filled"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
+
+        <!-- Stakeholder 4: Government Agencies & Oversight -->
         <div class="col-xl-3 col-lg-3 col-sm-6">
           <div class="ud-single-team wow fadeInUp" data-wow-delay=".25s">
             <div class="ud-team-image-wrapper">
               <div class="ud-team-image">
-                <img src="{% static 'images/team/team-04.png' %}" alt="team" />
+                <img src="{% static 'images/team/team-04.png' %}" alt="Government Agencies" />
               </div>
 
               <img
@@ -616,30 +516,16 @@
               />
             </div>
             <div class="ud-team-info">
-              <h5>Jackie Sanders</h5>
-              <h6>Content Writer</h6>
+              <h5>Public Agencies</h5>
+              <h6>Performance Oversight</h6>
+              <p class="mt-2 text-sm" style="font-size: 14px; color: #637381; padding: 0 10px;">
+                Monitor contractor field progress in real time across all 20 LGAs through direct citizen feedback.
+              </p>
             </div>
-            <ul class="ud-team-socials">
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-facebook-filled"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-twitter-filled"></i>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/MusharofChy">
-                  <i class="lni lni-instagram-filled"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <!-- Team End -->
+  <!-- Serve End -->
 {% endblock content %}
