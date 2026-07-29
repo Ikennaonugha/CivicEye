@@ -2,6 +2,9 @@ from django import forms
 from captcha.fields import CaptchaField
 from .models import CivicFlag
 
+# Maximum allowed upload size (5 MB)
+MAX_UPLOAD_SIZE = 5 * 1024 * 1024
+
 
 class CivicFlagForm(forms.ModelForm):
     captcha = CaptchaField(
@@ -39,3 +42,9 @@ class CivicFlagForm(forms.ModelForm):
             'user_latitude': forms.HiddenInput(),
             'user_longitude': forms.HiddenInput(),
         }
+
+    def clean_evidence_image(self):
+        evidence_image = self.cleaned_data.get('evidence_image')
+        if evidence_image and evidence_image.size > MAX_UPLOAD_SIZE:
+            raise forms.ValidationError("Image size cannot exceed 5MB.")
+        return evidence_image
