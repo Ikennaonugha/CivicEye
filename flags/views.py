@@ -31,7 +31,7 @@ LAGOS_LGAS = [
 ]
 
 
-def project_list(request):
+def project_list_view(request):
     selected_lga = request.GET.get('lga', '')
     
     projects_qs = ProcurementProject.objects.all().order_by('-created_at')
