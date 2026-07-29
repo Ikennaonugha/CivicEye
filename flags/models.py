@@ -94,7 +94,7 @@ class CivicFlag(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
