@@ -26,24 +26,50 @@
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger mb-3">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
         <div class="mb-3">
           <label class="form-label font-weight-bold">Type of Issue</label>
           {{ form.issue_type }}
+          {% if form.issue_type.errors %}
+            <div class="text-danger small mt-1">
+              {{ form.issue_type.errors }}
+            </div>
+          {% endif %}
         </div>
 
         <div class="mb-3">
           <label class="form-label font-weight-bold">Report Headline</label>
           {{ form.headline }}
+          {% if form.headline.errors %}
+            <div class="text-danger small mt-1">
+              {{ form.headline.errors }}
+            </div>
+          {% endif %}
         </div>
 
         <div class="mb-3">
           <label class="form-label font-weight-bold">Detailed Explanation</label>
           {{ form.description }}
+          {% if form.description.errors %}
+            <div class="text-danger small mt-1">
+              {{ form.description.errors }}
+            </div>
+          {% endif %}
         </div>
 
         <div class="mb-3">
           <label class="form-label font-weight-bold">Upload Photo Evidence (Optional)</label>
           {{ form.evidence_image }}
+          {% if form.evidence_image.errors %}
+            <div class="text-danger small mt-1">
+              {{ form.evidence_image.errors }}
+            </div>
+          {% endif %}
         </div>
 
         <!-- Hidden GPS fields -->

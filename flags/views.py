@@ -72,7 +72,11 @@ def submit_flag(request, project_id):
 
             # 2. Total Submissions Limit Check for Unauthenticated / Guest Users
             if not request.user.is_authenticated:
-                total_guest_flags = CivicFlag.objects.filter(ip_address=user_ip).count()
+                # Count only flags submitted anonymously (where user is NULL)
+                total_guest_flags = CivicFlag.objects.filter(
+                    ip_address=user_ip,
+                    user__isnull=True
+                ).count()
 
                 if total_guest_flags >= 2:
                     messages.error(

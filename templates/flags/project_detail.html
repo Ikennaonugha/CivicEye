@@ -75,14 +75,6 @@
                   <strong class="text-dark">{{ project.contractor|default:"Unspecified Contractor" }}</strong>
                 </div>
               </div>
-              {% if project.award_date %}
-              <div class="col-md-6">
-                <div class="p-3 border rounded bg-white">
-                  <span class="d-block text-muted small">Award Date</span>
-                  <strong class="text-dark">{{ project.award_date|date:"F d, Y" }}</strong>
-                </div>
-              </div>
-              {% endif %}
               <div class="col-md-6">
                 <div class="p-3 border rounded bg-white">
                   <span class="d-block text-muted small">GPS Coordinates</span>

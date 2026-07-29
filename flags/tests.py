@@ -122,3 +122,32 @@ class FlagReportingWorkflowTests(TestCase):
         res3 = self.client.post(self.submit_url, p3, REMOTE_ADDR="10.0.0.1")
         self.assertEqual(res3.status_code, 200)  # Re-renders form without saving
         self.assertEqual(CivicFlag.objects.filter(ip_address="10.0.0.1").count(), 2)
+
+    def test_authenticated_flags_do_not_count_toward_guest_limit(self):
+        """Flags submitted by authenticated users should not count against the guest IP limit."""
+        # Authenticated user submits 2 flags from IP 10.0.0.1
+        self.client.login(username="citizen_auditor", password="Password123!")
+        payload = {
+            "issue_type": "delay",
+            "headline": "Auth user report",
+            "description": "Report details...",
+            **self._get_captcha_payload("passed")
+        }
+        self.client.post(self.submit_url, payload, REMOTE_ADDR="10.0.0.1")
+        self.client.post(self.submit_url, payload, REMOTE_ADDR="10.0.0.1")
+
+        # Log out
+        self.client.logout()
+
+        # Guest from the same IP (10.0.0.1) should still be able to submit a flag
+        guest_payload = {
+            "issue_type": "quality",
+            "headline": "Guest user report",
+            "description": "Guest report details...",
+            **self._get_captcha_payload("passed")
+        }
+        response = self.client.post(self.submit_url, guest_payload, REMOTE_ADDR="10.0.0.1")
+        
+        # Should redirect on success (302) instead of blocking with 200
+        self.assertIn(response.status_code, [301, 302])
+        self.assertEqual(CivicFlag.objects.filter(ip_address="10.0.0.1", user__isnull=True).count(), 1)
