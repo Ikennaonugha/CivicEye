@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.paginator import Paginator
 
 from .forms import CivicFlagForm
 from .models import ProcurementProject, CivicFlag
@@ -30,24 +31,19 @@ LAGOS_LGAS = [
 ]
 
 
-def project_list_view(request):
-    """Lists ongoing procurement projects defaulting exclusively to Lagos State."""
-    selected_state = request.GET.get('state', 'Lagos').strip()
-    selected_lga = request.GET.get('lga', '').strip()
-
-    projects = ProcurementProject.objects.annotate(
-        total_flags=Count('flags')
-    ).order_by('-created_at')
-
-    if selected_state:
-        projects = projects.filter(state__iexact=selected_state)
-
+def project_list(request):
+    selected_lga = request.GET.get('lga', '')
+    
+    projects_qs = ProcurementProject.objects.all().order_by('-created_at')
     if selected_lga:
-        projects = projects.filter(lga__iexact=selected_lga)
+        projects_qs = projects_qs.filter(lga=selected_lga)
+
+    paginator = Paginator(projects_qs, 9)
+    page_number = request.GET.get('page')
+    projects_page = paginator.get_page(page_number)
 
     context = {
-        'projects': projects,
-        'selected_state': selected_state,
+        'projects': projects_page,
         'selected_lga': selected_lga,
         'lagos_lgas': LAGOS_LGAS,
     }
