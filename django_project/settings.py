@@ -140,7 +140,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -150,7 +149,7 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
 ]
-SASS_PROCESSOR_ROOT = 
+SASS_PROCESSOR_ROOT = STATIC_ROOT
 WHITENOISE_MANIFEST_STRICT = False
 
 
