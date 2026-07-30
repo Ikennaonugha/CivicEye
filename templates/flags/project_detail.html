@@ -1,0 +1,169 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} | CivicEye Audit{% endblock title %}
+
+{% block content %}
+<!-- ====== Page Banner ====== -->
+<section class="ud-page-banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="ud-banner-content">
+          <h1>Project Details & Audit Log</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Main Content ====== -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <!-- Navigation Back Button -->
+    <div class="mb-4">
+      <a href="{% url 'flags:project_list' %}" class="btn btn-outline-secondary btn-sm">
+        &larr; Back to Projects Feed
+      </a>
+    </div>
+
+    <div class="row">
+      <!-- Left Column: Project Overview & Contract Details -->
+      <div class="col-lg-8 mb-4">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="badge bg-danger fs-6">{{ project.lga }}, {{ project.state }}</span>
+              <span class="badge 
+                {% if project.status == 'completed' %}bg-success
+                {% elif project.status == 'ongoing' %}bg-warning text-dark
+                {% elif project.status == 'abandoned' %}bg-dark
+                {% else %}bg-secondary{% endif %} fs-6">
+                {{ project.get_status_display }}
+              </span>
+            </div>
+
+            <h2 class="h3 fw-bold mb-3">{{ project.title }}</h2>
+            <p class="text-muted mb-4">{{ project.description|default:"No detailed project summary provided in official record." }}</p>
+
+            <hr class="my-4" />
+
+            <!-- Contract Metadata Grid -->
+            <h5 class="fw-bold mb-3">Procurement & Contract Details</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="p-3 border rounded bg-white">
+                  <span class="d-block text-muted small">Contract Reference (OCID)</span>
+                  <strong class="text-dark">{{ project.contract_id }}</strong>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 border rounded bg-white">
+                  <span class="d-block text-muted small">Award Budget</span>
+                  <strong class="text-danger fs-5">₦{{ project.budget|floatformat:2 }} NGN</strong>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 border rounded bg-white">
+                  <span class="d-block text-muted small">Procuring Entity / Ministry</span>
+                  <strong class="text-dark">{{ project.procuring_entity|default:"Lagos State Public Procurement Agency" }}</strong>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 border rounded bg-white">
+                  <span class="d-block text-muted small">Awarded Contractor</span>
+                  <strong class="text-dark">{{ project.contractor|default:"Unspecified Contractor" }}</strong>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 border rounded bg-white">
+                  <span class="d-block text-muted small">GPS Coordinates</span>
+                  <strong class="text-dark">
+                    {% if project.latitude and project.longitude %}
+                      {{ project.latitude|floatformat:4 }}, {{ project.longitude|floatformat:4 }}
+                    {% else %}
+                      Not tagged
+                    {% endif %}
+                  </strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Submitted Civic Flags -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="fw-bold mb-0">Public Audit Flags ({{ flags.count }})</h4>
+          <a href="{% url 'flags:submit_flag' project.id %}" class="btn btn-danger btn-sm">
+            + File New Flag
+          </a>
+        </div>
+
+        {% for flag in flags %}
+          <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title text-danger fw-bold mb-0">{{ flag.headline }}</h5>
+                <span class="badge bg-outline-danger border border-danger text-danger">
+                  {{ flag.get_issue_type_display }}
+                </span>
+              </div>
+              
+              <p class="text-muted small mb-3">
+                Reported by 
+                <strong>
+                  {% if flag.user %}
+                    {{ flag.user.get_full_name|default:flag.user.username }}
+                  {% else %}
+                    Anonymous Citizen
+                  {% endif %}
+                </strong> 
+                on {{ flag.created_at|date:"M d, Y \a\t h:i A" }}
+              </p>
+
+              <p class="card-text mb-3">{{ flag.description }}</p>
+
+              {% if flag.evidence_image %}
+                <div class="mt-3">
+                  <span class="d-block text-muted small mb-1">Attached Photo Evidence:</span>
+                  <a href="{{ flag.evidence_image.url }}" target="_blank">
+                    <img src="{{ flag.evidence_image.url }}" alt="Evidence Photo" class="img-thumbnail" style="max-height: 180px; object-fit: cover;" />
+                  </a>
+                </div>
+              {% endif %}
+
+              {% if flag.user_latitude and flag.user_longitude %}
+                <div class="mt-2">
+                  <span class="badge bg-light text-dark border">
+                    📍 On-Site GPS Tag Attached ({{ flag.user_latitude|floatformat:3 }}, {{ flag.user_longitude|floatformat:3 }})
+                  </span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <div class="card border-0 shadow-sm p-4 text-center">
+            <p class="text-muted mb-0">No public flags or irregularities have been reported for this contract yet.</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Right Column: Quick Action Sidebar -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4 sticky-top" style="top: 100px;">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">Notice an Irregularity?</h5>
+            <p class="text-muted small">
+              If you have visited this project site in <strong>{{ project.lga }}</strong> and observed substandard execution, inflated budgets, or abandoned work, report it now to trigger a public audit.
+            </p>
+            <a href="{% url 'flags:submit_flag' project.id %}" class="btn btn-danger w-100 py-2 fw-bold">
+              Report Irregularity
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock content %}

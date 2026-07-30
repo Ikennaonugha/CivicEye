@@ -50,12 +50,14 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'allauth',
     'allauth.account',
+    'captcha',
     #local
     'accounts.apps.AccountsConfig',
     'pages.apps.PagesConfig',
     'procurement',
     'dashboard.apps.DashboardConfig',
     'news.apps.NewsConfig',
+    'flags.apps.FlagsConfig',
 ]
 
 MIDDLEWARE = [
@@ -188,3 +190,19 @@ ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_LOGIN_METHODS = {"email", "username"}
 ACCOUNT_SIGNUP_FIELDS = ["username*","email*", "password1*"]
 ACCOUNT_UNIQUE_EMAIL = True
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+AWS_STORAGE_BUCKET_NAME = 'civiceye-media'
+AWS_S3_REGION_NAME = 'us-east-1'

@@ -1,0 +1,127 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<!-- ====== Page Banner ====== -->
+<section class="ud-page-banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="ud-banner-content">
+          <h1>Civic Flags & Project Monitor</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h2>Lagos State Projects</h2>
+      <p class="text-muted">Track public works, infrastructure projects, and report contract execution issues across Lagos State.</p>
+    </div>
+  </div>
+
+  <!-- LGA Filter Bar -->
+  <form method="GET" class="card card-body mb-4 shadow-sm">
+    <input type="hidden" name="state" value="Lagos">
+    
+    <div class="row g-3 align-items-center">
+      <div class="col-md-3">
+        <span class="badge bg-primary fs-6 w-100 py-2">State: Lagos</span>
+      </div>
+      
+      <div class="col-md-6">
+        <select name="lga" class="form-select">
+          <option value="">-- All Local Government Areas (LGAs) --</option>
+          {% for lga in lagos_lgas %}
+            <option value="{{ lga }}" {% if selected_lga == lga %}selected{% endif %}>
+              {{ lga }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-grow-1">Filter LGA</button>
+        {% if selected_lga %}
+          <a href="?state=Lagos" class="btn btn-outline-secondary">Reset</a>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+
+  <!-- Project Cards Grid -->
+  <div class="row g-4">
+    {% for project in projects %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 d-flex flex-column">
+          <div class="card-body flex-grow-1">
+            <span class="badge bg-secondary mb-2">{{ project.lga }} LGA, {{ project.state }}</span>
+            
+            <!-- Clickable Project Title -->
+            <h5 class="card-title">
+              <a href="{% url 'flags:project_detail' project.id %}" class="text-dark text-decoration-none hover-primary">
+                {{ project.title }}
+              </a>
+            </h5>
+            
+            <p class="card-text text-truncate">{{ project.description }}</p>
+            
+            <ul class="list-unstyled small text-muted my-3">
+              <li><strong>Contractor:</strong> {{ project.contractor }}</li>
+              <li><strong>Budget:</strong> ₦{{ project.budget|floatformat:2 }}</li>
+              <li><strong>Flags Filed:</strong> <span class="badge bg-warning text-dark">{{ project.total_flags }}</span></li>
+            </ul>
+          </div>
+          
+          <!-- Linked Footer Buttons -->
+          <div class="card-footer bg-white border-0 pt-0 pb-3 d-flex gap-2">
+            <a href="{% url 'flags:project_detail' project.id %}" class="btn btn-outline-primary btn-sm flex-fill">
+              View Details
+            </a>
+            <a href="{% url 'flags:submit_flag' project.id %}" class="btn btn-danger btn-sm flex-fill">
+              <i class="lni lni-flag"></i> Flag Issue
+            </a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center py-5">
+        <p class="text-muted">No projects found for the selected LGA. Run your LSPPA ingestion script to populate project records.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination Controls -->
+  {% if projects.has_other_pages %}
+    <nav aria-label="Project list pagination" class="mt-5">
+      <ul class="pagination justify-content-center">
+        {% if projects.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ projects.previous_page_number }}{% if selected_lga %}&lga={{ selected_lga }}{% endif %}&state=Lagos">&laquo; Previous</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo; Previous</span>
+          </li>
+        {% endif %}
+
+        <li class="page-item disabled">
+          <span class="page-link">Page {{ projects.number }} of {{ projects.paginator.num_pages }}</span>
+        </li>
+
+        {% if projects.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ projects.next_page_number }}{% if selected_lga %}&lga={{ selected_lga }}{% endif %}&state=Lagos">Next &raquo;</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Next &raquo;</span>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+{% endblock %}
