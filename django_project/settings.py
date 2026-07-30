@@ -95,10 +95,11 @@ if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=os.getenv('DB_SSL_REQUIRE', 'True') == 'True'
+            conn_max_age=0,
+            ssl_require=os.getenv('DB_SSL_REQUIRE', 'True') == 'True',
         )
     }
+    DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
 else:
     DATABASES = {
         'default': {
