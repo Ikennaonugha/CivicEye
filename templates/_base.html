@@ -1,5 +1,4 @@
 {% load static %}
-{% load sass_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +15,8 @@
   <link rel="stylesheet" href="{% static 'css/animate.css' %}" />
   <link rel="stylesheet" href="{% static 'css/lineicons.css' %}" />
 
-  <!-- Compiled SCSS Stylesheet -->
-  <link rel="stylesheet" type="text/css" href="{% sass_src 'scss/ud-styles.scss' %}" />
+  <!-- Pre-compiled SCSS Output -->
+  <link rel="stylesheet" href="{% static 'css/ud-styles.css' %}">
 
   {% block extra_css %}{% endblock %}
 </head>
