@@ -45,6 +45,7 @@ wheels/
 staticfiles/
 media/
 *.log
+static/**/*.css
 
 # 6. IDEs, Editors & System Files
 .vscode/

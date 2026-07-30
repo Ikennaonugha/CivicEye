@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sass_processor',
+    'compressor',
     'django.contrib.sites',
     # Third-party
     'crispy_forms',
@@ -149,9 +150,8 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
 ]
-SASS_PROCESSOR_ROOT = STATIC_ROOT
+SASS_PROCESSOR_ROOT = BASE_DIR / 'static'
 WHITENOISE_MANIFEST_STRICT = False
-
 
 # Media and Storage Configurations (Django 4.2+)
 MEDIA_URL = '/media/'
