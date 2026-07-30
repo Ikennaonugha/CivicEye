@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sass_processor',
-    'compressor',
     'django.contrib.sites',
     # Third-party
     'crispy_forms',
