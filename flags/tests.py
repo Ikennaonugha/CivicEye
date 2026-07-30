@@ -125,16 +125,31 @@ class FlagReportingWorkflowTests(TestCase):
 
     def test_authenticated_flags_do_not_count_toward_guest_limit(self):
         """Flags submitted by authenticated users should not count against the guest IP limit."""
-        # Authenticated user submits 2 flags from IP 10.0.0.1
         self.client.login(username="citizen_auditor", password="Password123!")
         payload = {
             "issue_type": "delay",
             "headline": "Auth user report",
             "description": "Report details...",
-            **self._get_captcha_payload("passed")
         }
-        self.client.post(self.submit_url, payload, REMOTE_ADDR="10.0.0.1")
-        self.client.post(self.submit_url, payload, REMOTE_ADDR="10.0.0.1")
+
+        # Authenticated submission 1
+        auth_res1 = self.client.post(
+            self.submit_url,
+            {**payload, **self._get_captcha_payload("passed")},
+            REMOTE_ADDR="10.0.0.1"
+        )
+        self.assertIn(auth_res1.status_code, [301, 302])
+
+        # Authenticated submission 2
+        auth_res2 = self.client.post(
+            self.submit_url,
+            {**payload, **self._get_captcha_payload("passed")},
+            REMOTE_ADDR="10.0.0.1"
+        )
+        self.assertIn(auth_res2.status_code, [301, 302])
+
+        # Assert two user-owned flags exist before logging out
+        self.assertEqual(CivicFlag.objects.filter(user=self.user).count(), 2)
 
         # Log out
         self.client.logout()

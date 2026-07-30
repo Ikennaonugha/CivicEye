@@ -32,6 +32,7 @@ LAGOS_LGAS = [
 
 
 def project_list_view(request):
+    """Paginated procurement project feed with LGA filtering."""
     selected_lga = request.GET.get('lga', '')
     
     projects_qs = ProcurementProject.objects.all().order_by('-created_at')
@@ -61,18 +62,19 @@ def get_client_ip(request):
 
 
 def submit_flag(request, project_id):
+    """Handles civic flag reporting with guest submission rate-limiting and validation."""
     project = get_object_or_404(ProcurementProject, pk=project_id)
 
     if request.method == 'POST':
-        form = CivicFlagForm(request.POST, request.FILES)
+        # Pass project instance to form for distance/GPS proximity validation
+        form = CivicFlagForm(request.POST, request.FILES, project=project)
 
-        # 1. Validate Form & CAPTCHA first (applies to ALL users)
+        # 1. Validate Form & CAPTCHA first
         if form.is_valid():
             user_ip = get_client_ip(request)
 
-            # 2. Total Submissions Limit Check for Unauthenticated / Guest Users
+            # 2. Total Submissions Limit Check for Guest Users (max 2)
             if not request.user.is_authenticated:
-                # Count only flags submitted anonymously (where user is NULL)
                 total_guest_flags = CivicFlag.objects.filter(
                     ip_address=user_ip,
                     user__isnull=True
@@ -101,17 +103,17 @@ def submit_flag(request, project_id):
             messages.success(request, "Your civic flag report has been submitted successfully.")
             return redirect('flags:project_list')
     else:
-        form = CivicFlagForm()
+        form = CivicFlagForm(project=project)
 
     return render(request, 'flags/submit_flag.html', {
         'form': form,
         'project': project,
     })
 
+
 def project_detail_view(request, project_id):
     """Displays detailed procurement project information and all public civic flags."""
     project = get_object_or_404(ProcurementProject, pk=project_id)
-    # Fetch all flags for this project, newest first
     flags = project.flags.all().order_by('-created_at')
 
     context = {
