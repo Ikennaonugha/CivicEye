@@ -150,7 +150,8 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
 ]
-SASS_PROCESSOR_ROOT = STATIC_ROOT
+SASS_PROCESSOR_ROOT = 
+WHITENOISE_MANIFEST_STRICT = False
 
 
 # Media and Storage Configurations (Django 4.2+)
