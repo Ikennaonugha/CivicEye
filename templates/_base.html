@@ -7,14 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>{% block title %}CivicEye{% endblock %}</title>
+
   <!-- Favicon Icon -->
-  <link rel="shortcut icon" href="{% static 'images/favicon.svg' %}" type="image/svg"/>
-  <!-- All CSS files -->
+  <link rel="shortcut icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml"/>
+
+  <!-- Core CSS files -->
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
   <link rel="stylesheet" href="{% static 'css/animate.css' %}" />
   <link rel="stylesheet" href="{% static 'css/lineicons.css' %}" />
 
-  <link rel="stylesheet" href="{% sass_src 'scss/ud-styles.scss' %}" />
+  <!-- Compiled SCSS Stylesheet -->
+  <link rel="stylesheet" type="text/css" href="{% sass_src 'scss/ud-styles.scss' %}" />
+
   {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -24,12 +28,28 @@
     {% include 'includes/header.html' %}
   {% endblock header %}
 
-  <!-- Page Content -->
-  {% block content %}
-  {% endblock content %}
+  <!-- Django Flash Messages / Alerts -->
+  {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Main Content Wrapper -->
+  <main id="main-content">
+    {% block content %}
+    {% endblock content %}
+  </main>
 
   <!-- Footer -->
-  {% include 'includes/footer.html' %}
+  {% block footer %}
+    {% include 'includes/footer.html' %}
+  {% endblock footer %}
 
   <!-- Back To Top Button -->
   <button type="button" class="back-to-top" aria-label="Scroll to top">
