@@ -1,33 +1,43 @@
+import os
 import ijson
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
 from procurement.models import ContractingRelease
 
 class Command(BaseCommand):
-    help = 'Streams and imports massive OCDS procurement JSON files into SQLite'
+    help = 'Streams and imports massive OCDS procurement JSON files into the database'
 
     def add_arguments(self, parser):
+        # Dynamically build path: <BASE_DIR>/data/ContractingRelease.json
+        default_path = os.path.join(settings.BASE_DIR, 'data', 'ContractingRelease.json')
+
         parser.add_argument(
             'json_file', 
             nargs='?', 
             type=str, 
-            default=r'C:\Users\Admin\Desktop\ContractingRelease.json',
-            help='Path to the JSON file'
+            default=default_path,
+            help='Path to the JSON file (defaults to data/ContractingRelease.json relative to project root)'
         )
 
     def handle(self, *args, **kwargs):
         file_path = kwargs['json_file']
 
         self.stdout.write(f"Streaming JSON file from: {file_path}")
-        
+
+        # Check if the file exists before attempting to stream
+        if not os.path.exists(file_path):
+            self.stdout.write(self.style.ERROR(f"File not found at {file_path}"))
+            return
+
         batch_size = 1000
         objects_to_create = []
         count = 0
 
         try:
             with open(file_path, 'rb') as f:
-                # FIXED: use_float=True converts numbers to floats so JSONField serialization won't crash
+                # use_float=True converts numbers to floats so JSONField serialization won't crash
                 releases = ijson.items(f, 'releases.item', use_float=True)
 
                 for item in releases:
@@ -90,5 +100,5 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS(f"Successfully imported all {count} OCDS records!"))
 
-        except FileNotFoundError:
-            self.stdout.write(self.style.ERROR(f"File not found at {file_path}"))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f"Error processing JSON file: {str(e)}"))
