@@ -162,7 +162,7 @@ STORAGES = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage" if os.getenv('AWS_ACCESS_KEY_ID') else "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
